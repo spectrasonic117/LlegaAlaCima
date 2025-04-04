@@ -16,12 +16,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+
 public class GameListener implements Listener {
 
     private final GameManager gameManager;
     private final JavaPlugin plugin;
-    private final double jumpPower;
-    private final double dashPower;
+    private double jumpPower; // Remove 'final'
+    private double dashPower; // Remove 'final'
 
     public GameListener(GameManager gameManager, JavaPlugin plugin) {
         this.gameManager = gameManager;
@@ -73,5 +74,10 @@ public class GameListener implements Listener {
         player.setGameMode(GameMode.SPECTATOR);
         // Dar punto usando PointsManager.
         gameManager.getPointsManager().addPoints(player, 1);
+    }
+
+    public void updateJumpAndDashPower(double jumpPower, double dashPower) {
+        this.jumpPower = jumpPower;
+        this.dashPower = dashPower;
     }
 }

@@ -2,24 +2,29 @@
 package com.spectrasonic.LlegaAlaCima.managers;
 
 import com.spectrasonic.LlegaAlaCima.Utils.ItemBuilder;
+import com.spectrasonic.LlegaAlaCima.listeners.GameListener;
 import com.spectrasonic.LlegaAlaCima.Utils.PointsManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 
 @Getter
 @Setter
 public class GameManager {
 
     private final JavaPlugin plugin;
+    private GameListener gameListener;
     private boolean running;
     private final PointsManager pointsManager;
 
     public GameManager(JavaPlugin plugin) {
         this.plugin = plugin;
         this.pointsManager = new PointsManager(plugin);
+        this.gameListener = new GameListener(this, plugin);
         this.running = false;
     }
 
@@ -45,5 +50,13 @@ public class GameManager {
 
     public void reloadPlugin() {
         plugin.reloadConfig();
+        // Actualizar las variables dependientes de la configuración
+        FileConfiguration config = plugin.getConfig();
+        ConfigurationSection jumpboost = config.getConfigurationSection("jumpboost");
+        double jumpPower = jumpboost.getDouble("jump");
+        double dashPower = jumpboost.getDouble("dash");
+
+        // Suponiendo que tienes una referencia a GameListener
+        gameListener.updateJumpAndDashPower(jumpPower, dashPower);
     }
 }

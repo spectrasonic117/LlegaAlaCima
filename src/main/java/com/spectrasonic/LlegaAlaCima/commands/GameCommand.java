@@ -5,6 +5,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.CommandCompletion;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import com.spectrasonic.LlegaAlaCima.managers.GameManager;
 import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@CommandAlias("llegaalacima")
+@CommandAlias("llegaalacima|cima")
 @RequiredArgsConstructor
 public class GameCommand extends BaseCommand {
 
@@ -20,30 +21,32 @@ public class GameCommand extends BaseCommand {
     private final GameManager gameManager;
 
     @Subcommand("game")
+    @CommandCompletion("start|stop")
+
     public void onGame(CommandSender sender, String action) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage("Este comando solo puede ser usado por jugadores.");
+            MessageUtils.sendMessage(sender, "<red>Este comando solo puede ser usado por jugadores.");
             return;
         }
         switch (action.toLowerCase()) {
             case "start":
                 if (gameManager.isRunning()) {
-                    sender.sendMessage("El minijuego ya está iniciado.");
+                    MessageUtils.sendMessage(sender, "<red>El minijuego ya está iniciado.");
                 } else {
                     gameManager.startGame();
-                    sender.sendMessage("Minijuego iniciado.");
+                    MessageUtils.sendMessage(sender, "Minijuego iniciado.");
                 }
                 break;
             case "stop":
                 if (!gameManager.isRunning()) {
-                    sender.sendMessage("El minijuego no está iniciado.");
+                    MessageUtils.sendMessage(sender, "<red>El minijuego no está iniciado.");
                 } else {
                     gameManager.stopGame();
-                    sender.sendMessage("Minijuego detenido.");
+                    MessageUtils.sendMessage(sender, "Minijuego detenido.");
                 }
                 break;
             default:
-                sender.sendMessage("Uso: /llegaalacima game <start|stop>");
+                MessageUtils.sendMessage(sender, "<yellow>Uso: /llegaalacima game <start|stop>");
         }
     }
 
