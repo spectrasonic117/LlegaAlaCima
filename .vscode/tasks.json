@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "gradle",
+            "id": "/Users/spectra/Desktop/LlegaAlaCimabuildLlegaAlaCima",
+            "script": "build",
+            "description": "Assembles and tests this project.",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "project": "LlegaAlaCima",
+            "buildFile": "/Users/spectra/Desktop/LlegaAlaCima/build.gradle",
+            "rootProject": "LlegaAlaCima",
+            "projectFolder": "/Users/spectra/Desktop/LlegaAlaCima",
+            "workspaceFolder": "/Users/spectra/Desktop/LlegaAlaCima",
+            "args": "",
+            "javaDebug": false,
+            "problemMatcher": [
+                "$gradle"
+            ],
+            "label": "gradle: build"
+        }
+    ]
+}
