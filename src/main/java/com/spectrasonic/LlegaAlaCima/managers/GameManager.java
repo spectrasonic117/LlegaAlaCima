@@ -34,8 +34,8 @@ public class GameManager {
         running = true;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.getGameMode() == GameMode.ADVENTURE) {
-                int main_slot = player.getInventory().getHeldItemSlot(); // Obtiene el slot que tiene en la mano
-                player.getInventory().setItem(main_slot, createImpulsorItem()); // Coloca el ítem en el slot
+                int main_slot = player.getInventory().getHeldItemSlot();
+                player.getInventory().setItem(main_slot, createImpulsorItem()); 
             }
         }
     }
