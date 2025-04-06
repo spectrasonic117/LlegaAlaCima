@@ -1,16 +1,18 @@
-// File: managers/GameManager.java
 package com.spectrasonic.LlegaAlaCima.managers;
 
 import com.spectrasonic.LlegaAlaCima.Utils.ItemBuilder;
 import com.spectrasonic.LlegaAlaCima.listeners.GameListener;
 import com.spectrasonic.LlegaAlaCima.Utils.PointsManager;
+import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.GameMode;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
+
 
 @Getter
 @Setter
@@ -31,32 +33,41 @@ public class GameManager {
     public void startGame() {
         running = true;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            // Dar el item de papel con customModelData 1086
-            player.getInventory().addItem(
-                    ItemBuilder.setMaterial("PAPER")
-                            .setName("<gold><b>Impulsor</b>")
-                            .setCustomModelData(1086)
-                            .build());
+            if (player.getGameMode() == GameMode.ADVENTURE) {
+                int main_slot = player.getInventory().getHeldItemSlot(); // Obtiene el slot que tiene en la mano
+                player.getInventory().setItem(main_slot, createImpulsorItem()); // Coloca el ítem en el slot
+            }
         }
     }
 
     public void stopGame() {
         running = false;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
-            player.getInventory().clear();
-            player.setGameMode(GameMode.ADVENTURE);
+            if (player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SPECTATOR) {
+                player.getInventory().clear(); // Limpia el inventario sólo si el jugador está en ADVENTURE o SPECTATOR
+                player.setGameMode(GameMode.ADVENTURE); // Cambia a modo AVENTURA
+            }
         }
     }
 
     public void reloadPlugin() {
-        plugin.reloadConfig();
-        // Actualizar las variables dependientes de la configuración
-        FileConfiguration config = plugin.getConfig();
-        ConfigurationSection jumpboost = config.getConfigurationSection("jumpboost");
+    plugin.reloadConfig();
+    FileConfiguration config = plugin.getConfig();
+    ConfigurationSection jumpboost = config.getConfigurationSection("jumpboost");
+    if (jumpboost != null) {
         double jumpPower = jumpboost.getDouble("jump");
         double dashPower = jumpboost.getDouble("dash");
-
-        // Suponiendo que tienes una referencia a GameListener
         gameListener.updateJumpAndDashPower(jumpPower, dashPower);
+        MessageUtils.sendConsoleMessage("Config Realoaded");
+    } else {
+        MessageUtils.sendConsoleMessage("Error al recargar la configuración");
+    }
+}
+
+    private ItemStack createImpulsorItem() {
+        return ItemBuilder.setMaterial("PAPER")
+                .setName("<gold><b>Impulsor</b>")
+                .setCustomModelData(1086)
+                .build();
     }
 }

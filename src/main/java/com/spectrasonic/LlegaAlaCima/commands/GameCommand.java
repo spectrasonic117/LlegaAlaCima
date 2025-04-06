@@ -1,4 +1,3 @@
-// File: commands/GameCommand.java
 package com.spectrasonic.LlegaAlaCima.commands;
 
 import co.aikar.commands.BaseCommand;
@@ -13,8 +12,8 @@ import com.spectrasonic.LlegaAlaCima.managers.GameManager;
 import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
-@CommandAlias("llegaalacima|cima")
 @RequiredArgsConstructor
+@CommandAlias("llegaalacima|cima")
 public class GameCommand extends BaseCommand {
 
     private final JavaPlugin plugin;

@@ -1,4 +1,3 @@
-// File: listeners/GameListener.java
 package com.spectrasonic.LlegaAlaCima.listeners;
 
 import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
@@ -21,8 +20,8 @@ public class GameListener implements Listener {
 
     private final GameManager gameManager;
     private final JavaPlugin plugin;
-    private double jumpPower; // Remove 'final'
-    private double dashPower; // Remove 'final'
+    private double jumpPower;
+    private double dashPower;
 
     public GameListener(GameManager gameManager, JavaPlugin plugin) {
         this.gameManager = gameManager;

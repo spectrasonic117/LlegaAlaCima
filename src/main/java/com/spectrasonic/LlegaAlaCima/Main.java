@@ -1,4 +1,3 @@
-// File: Main.java
 package com.spectrasonic.LlegaAlaCima;
 
 import co.aikar.commands.PaperCommandManager;
@@ -17,8 +16,10 @@ public final class Main extends JavaPlugin {
     public void onEnable() {
         saveDefaultConfig();
         gameManager = new GameManager(this);
+
         registerCommands();
         registerEvents();
+
         MessageUtils.sendStartupMessage(this);
     }
 
