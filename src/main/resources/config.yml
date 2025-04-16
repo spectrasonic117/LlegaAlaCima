@@ -1,3 +1,18 @@
 jumpboost:
     jump: 1.5
     dash: 0.5
+
+paste_pivot:
+    x: -5933
+    y: 65
+    z: -3129
+
+schematic_empty:
+    - cima_empty
+
+schematic_list_secuency:
+    - cima1
+    - cima2
+    - cima3
+    - cima2
+    - cima1

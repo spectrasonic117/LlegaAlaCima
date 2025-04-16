@@ -1,5 +1,5 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "editor.wordBasedSuggestions": "off",
-    "CodeGPT.apiKey": "Ollama"
+    "java.configuration.updateBuildConfiguration": "automatic"
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.spectrasonic.LlegaAlaCima.managers.GameManager;
+import com.spectrasonic.LlegaAlaCima.managers.SchematicSequenceManager;
 import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,10 +19,10 @@ public class GameCommand extends BaseCommand {
 
     private final JavaPlugin plugin;
     private final GameManager gameManager;
+    private final SchematicSequenceManager schematicSequenceManager;
 
     @Subcommand("game")
     @CommandCompletion("start|stop")
-
     public void onGame(CommandSender sender, String action) {
         if (!(sender instanceof Player)) {
             MessageUtils.sendMessage(sender, "<red>Este comando solo puede ser usado por jugadores.");
@@ -33,6 +34,7 @@ public class GameCommand extends BaseCommand {
                     MessageUtils.sendMessage(sender, "<red>El minijuego ya está iniciado.");
                 } else {
                     gameManager.startGame();
+                    schematicSequenceManager.startSequence();
                     MessageUtils.sendMessage(sender, "Minijuego iniciado.");
                 }
                 break;
@@ -41,6 +43,7 @@ public class GameCommand extends BaseCommand {
                     MessageUtils.sendMessage(sender, "<red>El minijuego no está iniciado.");
                 } else {
                     gameManager.stopGame();
+                    schematicSequenceManager.stopSequence();
                     MessageUtils.sendMessage(sender, "Minijuego detenido.");
                 }
                 break;
@@ -52,6 +55,8 @@ public class GameCommand extends BaseCommand {
     @Subcommand("reload")
     public void onReload(CommandSender sender) {
         gameManager.reloadPlugin();
+        // Se detiene la secuencia al recargar
+        schematicSequenceManager.stopSequence();
         MessageUtils.sendMessage(sender, "<green>Configuración recargada correctamente.");
     }
 
