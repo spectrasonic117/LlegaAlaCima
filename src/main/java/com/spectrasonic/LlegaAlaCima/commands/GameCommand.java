@@ -21,47 +21,59 @@ public class GameCommand extends BaseCommand {
     private final GameManager gameManager;
     private final SchematicSequenceManager schematicSequenceManager;
 
-    @Subcommand("game")
-    @CommandCompletion("start|stop")
-    public void onGame(CommandSender sender, String action) {
+    @Subcommand("game start")
+    @CommandCompletion("1|2|3")
+    public void onGameStart(CommandSender sender, int round) {
         if (!(sender instanceof Player)) {
-            MessageUtils.sendMessage(sender, "<red>Este comando solo puede ser usado por jugadores.");
+            MessageUtils.sendMessage(sender,
+                "<red>Este comando solo puede ser usado por jugadores.");
             return;
         }
-        switch (action.toLowerCase()) {
-            case "start":
                 if (gameManager.isRunning()) {
-                    MessageUtils.sendMessage(sender, "<red>El minijuego ya está iniciado.");
-                } else {
-                    gameManager.startGame();
-                    schematicSequenceManager.startSequence();
-                    MessageUtils.sendMessage(sender, "Minijuego iniciado.");
+            MessageUtils.sendMessage(sender,
+                "<red>El minijuego ya está iniciado.");
+            return;
                 }
-                break;
-            case "stop":
-                if (!gameManager.isRunning()) {
-                    MessageUtils.sendMessage(sender, "<red>El minijuego no está iniciado.");
-                } else {
-                    gameManager.stopGame();
-                    schematicSequenceManager.stopSequence();
-                    MessageUtils.sendMessage(sender, "Minijuego detenido.");
-                }
-                break;
-            default:
-                MessageUtils.sendMessage(sender, "<yellow>Uso: /llegaalacima game <start|stop>");
+        gameManager.startGame(round);
+        schematicSequenceManager.startSequence(round);
+        MessageUtils.sendMessage(sender,
+            "<green>Minijuego iniciado en la ronda " + round + ".");
+    }
+
+    @Subcommand("game stop")
+    public void onGameStop(CommandSender sender) {
+        if (!(sender instanceof Player)) {
+            MessageUtils.sendMessage(sender,
+                "<red>Este comando solo puede ser usado por jugadores.");
+            return;
         }
+                if (!gameManager.isRunning()) {
+            MessageUtils.sendMessage(sender,
+                "<red>El minijuego no está iniciado.");
+            return;
+                }
+        gameManager.stopGame();
+        schematicSequenceManager.stopSequence();
+        MessageUtils.sendMessage(sender,
+            "<red>Minijuego detenido.");
     }
 
     @Subcommand("reload")
     public void onReload(CommandSender sender) {
         gameManager.reloadPlugin();
-        // Se detiene la secuencia al recargar
+        // Al recargar, detenemos cualquier secuencia activa
         schematicSequenceManager.stopSequence();
-        MessageUtils.sendMessage(sender, "<green>Configuración recargada correctamente.");
+        MessageUtils.sendMessage(sender,
+            "<green>Configuración recargada correctamente.");
     }
 
     @Default
     public void onDefault(CommandSender sender) {
-        sender.sendMessage("Uso: /llegaalacima game <start|stop> | /llegaalacima reload");
-    }
+        sender.sendMessage(
+            "Uso:\n" +
+            "/cima game start <ronda>  — Iniciar juego (ronda 1,2,3...)\n" +
+            "/cima game stop            — Detener juego\n" +
+            "/cima reload               — Recargar configuración"
+        );
+}
 }

@@ -1,20 +1,21 @@
 package com.spectrasonic.LlegaAlaCima.listeners;
 
-import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import com.spectrasonic.LlegaAlaCima.managers.GameManager;
+import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.block.Action;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-
+import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
 
 public class GameListener implements Listener {
 
@@ -33,46 +34,50 @@ public class GameListener implements Listener {
     }
 
     @EventHandler
-    public void onRightClickAmethystBlock(PlayerInteractEvent event) {
-        if (!gameManager.isRunning())
+    public void onRightClickWoolBlock(PlayerInteractEvent event) {
+        if (!gameManager.isRunning()) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        if (event.getClickedBlock() == null) return;
+
+        // Verificamos los 3 tipos de lana válidos
+        Material clickedType = event.getClickedBlock().getType();
+        if (clickedType != Material.WHITE_WOOL
+            && clickedType != Material.YELLOW_WOOL
+            && clickedType != Material.RED_WOOL) {
             return;
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
-        if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.AMETHYST_BLOCK)
-            return;
+        }
 
         Player player = event.getPlayer();
         ItemStack mainHand = player.getInventory().getItemInMainHand();
-        if (mainHand == null || mainHand.getType() != Material.PAPER)
-            return;
+        if (mainHand == null || mainHand.getType() != Material.PAPER) return;
         if (!mainHand.hasItemMeta() || !mainHand.getItemMeta().hasCustomModelData())
             return;
-        if (mainHand.getItemMeta().getCustomModelData() != 1086)
-            return;
+        if (mainHand.getItemMeta().getCustomModelData() != 1086) return;
 
-        // Lanzar al jugador hacia arriba y ligeramente adelante.
-        Vector direction = player.getLocation().getDirection().normalize().multiply(dashPower);
-        direction.setY(jumpPower);
-        player.setVelocity(direction);
+        // Mecánica de empujón (igual que antes)
+        Vector dir = player.getLocation().getDirection().normalize()
+                        .multiply(dashPower);
+        dir.setY(jumpPower);
+        player.setVelocity(dir);
     }
 
     @EventHandler
-    public void onRightClickBell(PlayerInteractEvent event) {
-        if (!gameManager.isRunning())
-            return;
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
-        if (event.getClickedBlock() == null || event.getClickedBlock().getType() != Material.BELL)
-            return;
+    public void onPlayerMove(PlayerMoveEvent e) {
+        if (!gameManager.isRunning()) return;
+        if (e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
+        Player player = e.getPlayer();
+        if (gameManager.hasScored(player)) return;
 
-        Player player = event.getPlayer();
-        // Mostrar ActionBar y Título.
-        MessageUtils.sendActionBar(player, "<green><b>+1 Punto");
-        MessageUtils.sendTitle(player, "<green><b>Has llegado", "", 2, 40, 2);
-        // Establecer modo espectador.
+        Block under = player.getLocation().subtract(0, 1, 0).getBlock();
+        if (under.getType() != Material.BLACK_WOOL) return;
+
+        gameManager.recordScore(player);
+        gameManager.getPointsManager().addPoints(player, 10);
+
+        MessageUtils.sendActionBar(player, "<green><b>+10 Puntos");
+        MessageUtils.sendTitle(player,
+            "<green><b>¡Has llegado!", "", 2, 40, 2);
         player.setGameMode(GameMode.SPECTATOR);
-        // Dar punto usando PointsManager.
-        gameManager.getPointsManager().addPoints(player, 1);
     }
 
     public void updateJumpAndDashPower(double jumpPower, double dashPower) {

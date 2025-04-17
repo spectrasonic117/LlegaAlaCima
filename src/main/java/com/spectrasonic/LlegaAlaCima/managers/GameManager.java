@@ -13,6 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
 
 @Getter
 @Setter
@@ -21,7 +25,9 @@ public class GameManager {
     private final JavaPlugin plugin;
     private GameListener gameListener;
     private boolean running;
+    private int currentRound;
     private final PointsManager pointsManager;
+    private final Set<UUID> scoredPlayers = new HashSet<>();
 
     public GameManager(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -30,8 +36,10 @@ public class GameManager {
         this.running = false;
     }
 
-    public void startGame() {
+    public void startGame(int round) {
         running = true;
+        this.currentRound = round;
+        this.scoredPlayers.clear();
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.getGameMode() == GameMode.ADVENTURE) {
                 int main_slot = player.getInventory().getHeldItemSlot();
@@ -41,11 +49,11 @@ public class GameManager {
     }
 
     public void stopGame() {
-        running = false;
+        this.running = false;
         for (Player player : plugin.getServer().getOnlinePlayers()) {
             if (player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SPECTATOR) {
-                player.getInventory().clear(); // Limpia el inventario sólo si el jugador está en ADVENTURE o SPECTATOR
-                player.setGameMode(GameMode.ADVENTURE); // Cambia a modo AVENTURA
+                player.getInventory().clear();
+                player.setGameMode(GameMode.ADVENTURE);
             }
         }
     }
@@ -63,11 +71,27 @@ public class GameManager {
         MessageUtils.sendConsoleMessage("Error al recargar la configuración");
     }
 }
+    public boolean isRunning() {
+        return running;
+    }
 
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
+    public boolean hasScored(Player p) {
+        return scoredPlayers.contains(p.getUniqueId());
+    }
+
+    public void recordScore(Player p) {
+        scoredPlayers.add(p.getUniqueId());
+    }
     private ItemStack createImpulsorItem() {
         return ItemBuilder.setMaterial("PAPER")
-                .setName("<gold><b>Impulsor</b>")
-                .setCustomModelData(1086)
+                .setName("<gold><b>Resorte Impulsor</b>")
+                .setLore("<gray>Click derecho en",
+                        "<gray>las lanas para impulsarte")
+                .setCustomModelData(1125)
                 .build();
     }
 }
