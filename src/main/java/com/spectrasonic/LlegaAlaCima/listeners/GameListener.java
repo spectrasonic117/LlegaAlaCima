@@ -52,7 +52,7 @@ public class GameListener implements Listener {
         if (mainHand == null || mainHand.getType() != Material.PAPER) return;
         if (!mainHand.hasItemMeta() || !mainHand.getItemMeta().hasCustomModelData())
             return;
-        if (mainHand.getItemMeta().getCustomModelData() != 1086) return;
+        if (mainHand.getItemMeta().getCustomModelData() != 1125) return;
 
         // Mecánica de empujón (igual que antes)
         Vector dir = player.getLocation().getDirection().normalize()
@@ -76,7 +76,7 @@ public class GameListener implements Listener {
 
         MessageUtils.sendActionBar(player, "<green><b>+10 Puntos");
         MessageUtils.sendTitle(player,
-            "<green><b>¡Has llegado!", "", 2, 40, 2);
+            "<green><b>¡Has llegado!", "", 1, 2, 1);
         player.setGameMode(GameMode.SPECTATOR);
     }
 

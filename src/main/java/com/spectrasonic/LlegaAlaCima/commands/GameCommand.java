@@ -34,6 +34,10 @@ public class GameCommand extends BaseCommand {
                 "<red>El minijuego ya está iniciado.");
             return;
                 }
+
+        // Ejecutar "id false" al iniciar
+        ((Player) sender).performCommand("id false");
+
         gameManager.startGame(round);
         schematicSequenceManager.startSequence(round);
         MessageUtils.sendMessage(sender,
@@ -52,6 +56,10 @@ public class GameCommand extends BaseCommand {
                 "<red>El minijuego no está iniciado.");
             return;
                 }
+
+        // Ejecutar "id true" al detener
+        ((Player) sender).performCommand("id true");
+
         gameManager.stopGame();
         schematicSequenceManager.stopSequence();
         MessageUtils.sendMessage(sender,
