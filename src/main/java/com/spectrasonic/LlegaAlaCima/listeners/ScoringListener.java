@@ -1,13 +1,13 @@
 package com.spectrasonic.LlegaAlaCima.listeners;
 
+import com.spectrasonic.LlegaAlaCima.managers.GameManager;
+import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import lombok.RequiredArgsConstructor;
-import com.spectrasonic.LlegaAlaCima.managers.GameManager;
-import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 
 @RequiredArgsConstructor
 public class ScoringListener implements Listener {
@@ -18,19 +18,17 @@ public class ScoringListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent e) {
         if (!gameManager.isRunning()) return;
 
-        // Sólo cuando cruza un bloque de altura
-        if (e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
-
+        // Verificamos si el jugador ya ha puntuado
         if (gameManager.hasScored(e.getPlayer())) return;
 
-        Block under = e.getPlayer()
-            .getLocation()
-            .subtract(0, 1, 0)
-            .getBlock();
-        if (under.getType() == Material.BLACK_WOOL) {
+        // Obtenemos el bloque sobre el que está parado el jugador
+        Block standingOn = e.getPlayer().getLocation().getBlock();
+
+        // Si está parado sobre la lana negra,registramos la puntuación
+        if (standingOn.getType() == Material.BLACK_WOOL) {
             gameManager.recordScore(e.getPlayer());
             MessageUtils.sendMessage(e.getPlayer(),
-              "<gold>¡Has puntuado!</gold>");
+              "<gold>¡Has Llegado!</gold>");
         }
     }
 }

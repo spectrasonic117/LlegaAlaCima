@@ -42,8 +42,7 @@ public class GameListener implements Listener {
         // Verificamos los 3 tipos de lana válidos
         Material clickedType = event.getClickedBlock().getType();
         if (clickedType != Material.WHITE_WOOL
-            && clickedType != Material.YELLOW_WOOL
-            && clickedType != Material.RED_WOOL) {
+            && clickedType != Material.YELLOW_WOOL) {
             return;
         }
 
@@ -63,21 +62,24 @@ public class GameListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent e) {
-        if (!gameManager.isRunning()) return;
-        if (e.getFrom().getBlockY() == e.getTo().getBlockY()) return;
+        // Early returns for non-relevant events
+        if (!gameManager.isRunning() || gameManager.hasScored(e.getPlayer())) {
+            return;
+        }
+
         Player player = e.getPlayer();
-        if (gameManager.hasScored(player)) return;
+        // Get the block under the player's feet
+        Block under = player.getLocation().clone().add(0, -1, 0).getBlock();
 
-        Block under = player.getLocation().subtract(0, 1, 0).getBlock();
-        if (under.getType() != Material.BLACK_WOOL) return;
+        // Check if the player is standing on BLACK_WOOL
+        if (under.getType() == Material.BLACK_WOOL) {
+            gameManager.recordScore(player);
+            gameManager.getPointsManager().addPoints(player, 10);
 
-        gameManager.recordScore(player);
-        gameManager.getPointsManager().addPoints(player, 10);
-
-        MessageUtils.sendActionBar(player, "<green><b>+10 Puntos");
-        MessageUtils.sendTitle(player,
-            "<green><b>¡Has llegado!", "", 1, 2, 1);
-        player.setGameMode(GameMode.SPECTATOR);
+            MessageUtils.sendActionBar(player, "<green><b>+10 Puntos");
+            MessageUtils.sendTitle(player, "<green><b>¡Has llegado!", "", 1, 2, 1);
+            player.setGameMode(GameMode.SPECTATOR);
+        }
     }
 
     public void updateJumpAndDashPower(double jumpPower, double dashPower) {

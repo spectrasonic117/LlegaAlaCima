@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import com.spectrasonic.LlegaAlaCima.managers.GameManager;
-import com.spectrasonic.LlegaAlaCima.managers.SchematicSequenceManager;
 import com.spectrasonic.LlegaAlaCima.Utils.MessageUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,7 +18,6 @@ public class GameCommand extends BaseCommand {
 
     private final JavaPlugin plugin;
     private final GameManager gameManager;
-    private final SchematicSequenceManager schematicSequenceManager;
 
     @Subcommand("game start")
     @CommandCompletion("1|2|3")
@@ -29,17 +27,15 @@ public class GameCommand extends BaseCommand {
                 "<red>Este comando solo puede ser usado por jugadores.");
             return;
         }
-                if (gameManager.isRunning()) {
+        if (gameManager.isRunning()) {
             MessageUtils.sendMessage(sender,
                 "<red>El minijuego ya está iniciado.");
             return;
-                }
+        }
 
-        // Ejecutar "id false" al iniciar
         ((Player) sender).performCommand("id false");
 
         gameManager.startGame(round);
-        schematicSequenceManager.startSequence(round);
         MessageUtils.sendMessage(sender,
             "<green>Minijuego iniciado en la ronda " + round + ".");
     }
@@ -51,17 +47,16 @@ public class GameCommand extends BaseCommand {
                 "<red>Este comando solo puede ser usado por jugadores.");
             return;
         }
-                if (!gameManager.isRunning()) {
+        if (!gameManager.isRunning()) {
             MessageUtils.sendMessage(sender,
                 "<red>El minijuego no está iniciado.");
             return;
-                }
+        }
 
         // Ejecutar "id true" al detener
         ((Player) sender).performCommand("id true");
 
         gameManager.stopGame();
-        schematicSequenceManager.stopSequence();
         MessageUtils.sendMessage(sender,
             "<red>Minijuego detenido.");
     }
@@ -69,8 +64,6 @@ public class GameCommand extends BaseCommand {
     @Subcommand("reload")
     public void onReload(CommandSender sender) {
         gameManager.reloadPlugin();
-        // Al recargar, detenemos cualquier secuencia activa
-        schematicSequenceManager.stopSequence();
         MessageUtils.sendMessage(sender,
             "<green>Configuración recargada correctamente.");
     }
@@ -83,5 +76,5 @@ public class GameCommand extends BaseCommand {
             "/cima game stop            — Detener juego\n" +
             "/cima reload               — Recargar configuración"
         );
-}
+    }
 }
