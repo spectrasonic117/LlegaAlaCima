@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @RequiredArgsConstructor
 @CommandAlias("llegaalacima|cima")
+@CommandPermission("llegaalacima.game")
 public class GameCommand extends BaseCommand {
 
     private final JavaPlugin plugin;
