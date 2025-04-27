@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 @RequiredArgsConstructor
 @CommandAlias("llegaalacima|cima")
-@CommandPermission("llegaalacima.game")
+@CommandPermission("llegaalacima.admin")
 public class GameCommand extends BaseCommand {
 
     private final JavaPlugin plugin;

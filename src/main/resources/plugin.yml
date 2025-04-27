@@ -1,5 +1,16 @@
 name: LlegaAlaCima
-version: '${version}'
+version: "${version}"
 main: com.spectrasonic.LlegaAlaCima.Main
-api-version: '1.21'
+api-version: "1.21"
 authors: [Spectrasonic]
+commands:
+    llegaalacima:
+        description: Comandos del plugin LlegaAlaCima
+        aliases: [cima]
+        default: op
+        permission: llegaalacima.admin
+        usage: /<command>
+permissions:
+    llegaalacima.admin:
+        description: Permiso para usar todos los comandos del plugin
+        default: op
