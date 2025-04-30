@@ -14,3 +14,8 @@ schematic_rounds:
     - cima_round_1
     - cima_round_2
     - cima_round_3
+
+score_points:
+    - round_1: 60
+    - round_2: 80
+    - round_3: 100

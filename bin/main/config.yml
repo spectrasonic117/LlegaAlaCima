@@ -10,18 +10,12 @@ paste_pivot:
 schematic_empty:
     - cima_empty
 
-# schematic_list_secuency:
-#     - cima1
-#     - cima2
-#     - cima3
-#     - cima2
-#     - cima1
+schematic_rounds:
+    - cima_round_1
+    - cima_round_2
+    - cima_round_3
 
-schematic_list_secuency_round_1:
-    - cima_r1_1
-    - cima_r1_2
-    - cima_r1_3
-    - cima_r1_4
-    - cima_r1_5
-    - cima_r1_6
-    - cima_r1_7
+score_points:
+    - round_1: 60
+    - round_2: 80
+    - round_3: 100

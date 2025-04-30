@@ -74,10 +74,23 @@ public class GameListener implements Listener {
         // Check if the player is standing on BLACK_WOOL
         if (under.getType() == Material.BLACK_WOOL) {
             gameManager.recordScore(player);
-            gameManager.getPointsManager().addPoints(player, 10);
-
-            MessageUtils.sendActionBar(player, "<green><b>+10 Puntos");
-            MessageUtils.sendTitle(player, "<green><b>¡Has llegado!", "", 1, 2, 1);
+            
+            // Get points based on current round
+            FileConfiguration config = plugin.getConfig();
+            ConfigurationSection scorePoints = config.getConfigurationSection("score_points");
+            if (scorePoints != null) {
+                int round = gameManager.getCurrentRound();
+                String roundKey = "round_" + round;
+                int points = scorePoints.getInt(roundKey);
+                
+                // Add points to player
+                gameManager.getPointsManager().addPoints(player, points);
+                
+                // Send messages with the correct points
+                MessageUtils.sendActionBar(player, "<green><b>+" + points + " Puntos");
+                MessageUtils.sendTitle(player, "<green><b>¡Has llegado!", "<yellow>+" + points + " puntos", 1, 2, 1);
+            }
+            
             player.setGameMode(GameMode.SPECTATOR);
         }
     }
