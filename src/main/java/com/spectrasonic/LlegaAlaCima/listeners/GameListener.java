@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
+import org.bukkit.Sound;
 
 public class GameListener implements Listener {
 
@@ -71,10 +72,13 @@ public class GameListener implements Listener {
         // Get the block under the player's feet
         Block under = player.getLocation().clone().add(0, -1, 0).getBlock();
 
+        // Debug message
+        plugin.getLogger().info("Player " + player.getName() + " is standing on " + under.getType());
+
         // Check if the player is standing on BLACK_WOOL
         if (under.getType() == Material.BLACK_WOOL) {
             gameManager.recordScore(player);
-            
+
             // Get points based on current round
             FileConfiguration config = plugin.getConfig();
             ConfigurationSection scorePoints = config.getConfigurationSection("score_points");
@@ -82,15 +86,16 @@ public class GameListener implements Listener {
                 int round = gameManager.getCurrentRound();
                 String roundKey = "round_" + round;
                 int points = scorePoints.getInt(roundKey);
-                
+
                 // Add points to player
-                gameManager.getPointsManager().addPoints(player, points);
                 
                 // Send messages with the correct points
-                MessageUtils.sendActionBar(player, "<green><b>+" + points + " Puntos");
-                MessageUtils.sendTitle(player, "<green><b>¡Has llegado!", "<yellow>+" + points + " puntos", 1, 2, 1);
+                MessageUtils.sendActionBar(player, "<green><b>+50 Puntos");
             }
             
+            MessageUtils.sendTitle(player, "<green><b>¡Has llegado!", "<yellow>+50 puntos", 1, 2, 1);
+            gameManager.getPointsManager().addPoints(player, 50);
+            player.playSound(player.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1.0f, 1.0f);
             player.setGameMode(GameMode.SPECTATOR);
         }
     }
